@@ -155,7 +155,10 @@ export const locationByIdReducer = (state = {}, action) => {
         case GET_BY_ID_REQUEST:
             return { loading: true }
         case GET_BY_ID_SUCCESS:
-            return { loading: false, success: true, locById: action.payload }
+            let data = action.payload.data
+            console.log('ini data by id', data);
+            return { loading: false, success: true, locById: action.payload.data }
+
         case GET_BY_ID_FAIL:
             return { loading: false, error: action.payload }
         default:

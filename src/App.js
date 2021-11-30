@@ -27,6 +27,24 @@ const App = () => {
   const locationType = useSelector(state => state.locationType)
   const { loading, error, locationTypes } = locationType
 
+  let arr = [
+    {
+      "code": "PR",
+      "name": "Project"
+    }
+    , {
+      "code": "BD",
+      "name": "Building"
+    }
+    , {
+      "code": "FL",
+      "name": "Floor"
+    }
+    , {
+      "code": "RO",
+      "name": "Room"
+    }]
+
   const projectList = useSelector(state => state.projectList)
   const { loading: loadingProject, error: errorProject, projects } = projectList
 
@@ -42,6 +60,10 @@ const App = () => {
   const locationList = useSelector(state => state.locationList)
   const { loading: loadingLocation, error: errorLocation, locations } = locationList
 
+  const locationById = useSelector(state => state.locationById)
+  const { loading: loadingById, error: errorById, locById } = locationById
+
+
   const [location, setLocation] = useState('')
   const [project, setProject] = useState('')
   const [building, setBuilding] = useState('')
@@ -51,7 +73,7 @@ const App = () => {
   const [longitude, setLongitude] = useState(0)
   const [dispensation, setDispensation] = useState(0)
   const [dataLocation, setDataLocation] = useState([])
-  const [editData, setEditData] = useState({})
+  // const [editData, setEditData] = useState({})
 
   const [locCode, setLocCode] = useState('')
   const [buildCode, setBuildCode] = useState('')
@@ -168,13 +190,10 @@ const App = () => {
     }
   }
 
-  const editHandler = (params) => {
+  const editHandler = (id) => {
 
-    let newData = locations.filter(e => e.locID === params)
-    console.log('ini data', newData[0]);
-
-    setEditData(newData[0])
-
+    dispatch(getLocationById(id))
+    // let newData = locations.filter(e => e.locID === params)
   }
 
 
@@ -211,6 +230,10 @@ const App = () => {
       setLocationName('')
 
     }
+
+
+
+
 
     // console.log('this is all locations', locations);
 
@@ -405,6 +428,7 @@ const App = () => {
           actionDelete={deleteHandler}
         />
       </Box>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -417,23 +441,23 @@ const App = () => {
               <Grid item>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Location Type</InputLabel>
+                  {/* <div>{locById?.locType}</div> */}
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={editData.locTypeLabel}
+                    value={locById?.locType}
                     label="Location"
                     onChange={(e) => handleLocation(e)}
                   >
+                    {arr && arr.map((loc, i) => (
 
-                    {locationTypes && locationTypes.map((loc, i) => (
-
-                      <MenuItem key={i} value={loc.name}>{loc.name}</MenuItem>
+                      <MenuItem key={i} value={loc.code}>{loc.name}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
 
-              {editData.locTypeLabel !== 'Project' && (
+              {locById?.locTypeLabel !== 'Project' && (
 
                 <Grid item>
                   <FormControl fullWidth>
@@ -441,12 +465,11 @@ const App = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={editData?.locName}
+                      value={locById?.project?.locName}
                       label="Project"
                       onChange={(e) => handleProject(e)}
                     >
 
-                      {/* <MenuItem value={editData?.locName}>{editData?.locName}</MenuItem> */}
 
                       {projects && projects.map((prj, i) => (
                         <MenuItem key={i} value={prj.locName}>{prj.locName}</MenuItem>
@@ -456,18 +479,18 @@ const App = () => {
                 </Grid>
               )}
 
-              {editData.locTypeLabel !== 'Project' && editData.locTypeLabel !== 'Building' && (
+              {locById?.locTypeLabel !== 'Project' && locById?.locTypeLabel !== 'Building' && (
                 <Grid item>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Choose Building</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={editData?.locName}
+                      value={locById?.locName}
                       label="Building"
                       onChange={(e) => handleBuilding(e)}
                     >
-                      {/* <MenuItem value={editData?.locName}>{editData?.locName}</MenuItem> */}
+                      <MenuItem value={locById?.locName}>{locById?.locName}</MenuItem>
 
                       {buildings && buildings.map((bld, i) => (
                         <MenuItem key={i} value={bld.locName}>{bld.locName}</MenuItem>
@@ -478,18 +501,18 @@ const App = () => {
               )}
 
 
-              {editData.locTypeLabel !== 'Project' && editData.locTypeLabel !== 'Floor' && editData.locTypeLabel !== 'Building' && (
+              {locById?.locTypeLabel !== 'Project' && locById?.locTypeLabel !== 'Floor' && locById?.locTypeLabel !== 'Building' && (
                 <Grid item>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Choose Floor</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={floor}
+                      value={locById?.locName}
                       label="Floors"
                       onChange={(e) => handleFloor(e)}
                     >
-                      <MenuItem value={editData?.locName}>{editData?.locName}</MenuItem>
+                      <MenuItem value={locById?.locName}>{locById?.locName}</MenuItem>
 
                       {floors && floors.map((flor, i) => (
                         <MenuItem key={i} value={flor.locName}>{flor.locName}</MenuItem>
@@ -506,7 +529,7 @@ const App = () => {
                     id="outlined-basic"
                     label="Input Name"
                     variant="outlined"
-                    value={editData.locName}
+                    value={locById?.locName}
                     onChange={(e) => setLocationName(e.target.value)}
                   />
                 </FormControl>
@@ -520,7 +543,7 @@ const App = () => {
                       id="outlined-basic"
                       label="Latitude"
                       variant="outlined"
-                      value={editData.locLatitude}
+                      value={locById?.locLatitude}
                       onChange={(e) => setLatitude(e.target.value)}
                     />
                   </FormControl>
@@ -531,7 +554,7 @@ const App = () => {
                       id="outlined-basic"
                       label="Longitude"
                       variant="outlined"
-                      value={editData.locLatitude}
+                      value={locById?.locLatitude}
                       onChange={(e) => setLongitude(e.target.value)}
                     />
                   </FormControl>
@@ -542,7 +565,7 @@ const App = () => {
                       id="outlined-basic"
                       label="Dispensation"
                       variant="outlined"
-                      value={editData.locDispensation}
+                      value={locById?.locDispensation}
                       onChange={(e) => setDispensation(e.target.value)}
                     />
                   </FormControl>
