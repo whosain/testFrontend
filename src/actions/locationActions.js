@@ -15,12 +15,21 @@ import {
     FLOOR_LIST_FAIL,
     CREATE_NEW_LOCATION_REQUEST,
     CREATE_NEW_LOCATION_SUCCESS,
-    CREATE_NEW_LOCATION_FAIL
+    CREATE_NEW_LOCATION_FAIL,
+    ALL_LOCATION_REQUEST,
+    ALL_LOCATION_SUCCESS,
+    ALL_LOCATION_FAIL,
+    POST_EDIT_REQUEST,
+    POST_EDIT_SUCCESS,
+    POST_EDIT_FAIL,
+    GET_BY_ID_REQUEST,
+    GET_BY_ID_SUCCESS,
+    GET_BY_ID_FAIL
 } from '../constants/locationContants'
 
 const URL = 'https://test-api.seucom.com'
 
-export const listLocations = () => async (dispatch) => {
+export const listLocationTypes = () => async (dispatch) => {
 
     try {
         dispatch({ type: LOCATION_LIST_REQUEST })
@@ -113,7 +122,7 @@ export const listFloors = (buildCode) => async (dispatch) => {
     }
 }
 
-export const createLocation = (locationName,locType,latitude,longitude,dispensation) => async (dispatch) => {
+export const createLocation = (objData) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_NEW_LOCATION_REQUEST })
 
@@ -126,13 +135,7 @@ export const createLocation = (locationName,locType,latitude,longitude,dispensat
 
         const { data } = await axios.post(
             `${URL}/api/locations`,
-            {
-                locName: locationName,
-                locType: locType,
-                locLatitude: latitude,
-                locLongitude: longitude,
-                locDispensation: dispensation
-            },
+            objData,
             config
         )
 
@@ -145,6 +148,96 @@ export const createLocation = (locationName,locType,latitude,longitude,dispensat
     } catch (error) {
         dispatch({
             type: CREATE_NEW_LOCATION_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+}
+
+
+export const listLocations = () => async (dispatch) => {
+
+    try {
+        dispatch({ type: ALL_LOCATION_REQUEST })
+
+        const { data } = await axios
+            .get(`${URL}/api/locations`)
+
+        dispatch({
+            type: ALL_LOCATION_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: ALL_LOCATION_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+}
+
+export const editLocation = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: POST_EDIT_REQUEST })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }
+
+
+        const { data } = await axios.put(
+            `${URL}/api/locations/${id}`,
+            config
+        )
+
+
+        dispatch({
+            type: POST_EDIT_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: POST_EDIT_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        })
+    }
+}
+
+export const getLocationById = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: GET_BY_ID_REQUEST })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+            }
+        }
+
+
+        const { data } = await axios.get(
+            `${URL}/api/locations/${id}`,
+            config
+        )
+
+
+        dispatch({
+            type: GET_BY_ID_SUCCESS,
+            payload: data
+        })
+
+    } catch (error) {
+        dispatch({
+            type: GET_BY_ID_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message

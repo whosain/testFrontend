@@ -11,6 +11,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function MyTable({ rows, actionDelete, actionEdit, actionModal }) {
+    
+    // console.log('ini adalah rows', rows[0]);
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -19,7 +22,7 @@ export default function MyTable({ rows, actionDelete, actionEdit, actionModal })
                         <TableCell align="center">Location Code</TableCell>
                         <TableCell>Location Name</TableCell>
                         <TableCell align="center">Location Type</TableCell>
-                        <TableCell align="center">ActionsDelete</TableCell>
+                        <TableCell align="center">Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -32,11 +35,11 @@ export default function MyTable({ rows, actionDelete, actionEdit, actionModal })
                             <TableCell component="th" scope="row">
                                 {row.locName}
                             </TableCell>
-                            <TableCell align="center">{row.locType}</TableCell>
+                            <TableCell align="center">{row.locTypeLabel}</TableCell>
                             <TableCell align="center">
                                 <Button 
                                     onClick={()=> {
-                                        actionEdit(row.locName);
+                                        actionEdit(row.locID);
                                         actionModal()
                                     }}
                                 >
@@ -46,7 +49,7 @@ export default function MyTable({ rows, actionDelete, actionEdit, actionModal })
                                 </Button>
                                 {' '}
                                 <Button
-                                    onClick={()=> actionDelete(row.locName)}
+                                    onClick={()=> actionDelete(row.locID)}
                                 >
                                     <IconButton aria-label="delete">
                                         <DeleteIcon />

@@ -13,13 +13,22 @@ import {
     FLOOR_LIST_FAIL,
     CREATE_NEW_LOCATION_REQUEST,
     CREATE_NEW_LOCATION_SUCCESS,
-    CREATE_NEW_LOCATION_FAIL
+    CREATE_NEW_LOCATION_FAIL,
+    ALL_LOCATION_REQUEST,
+    ALL_LOCATION_SUCCESS,
+    ALL_LOCATION_FAIL,
+    POST_EDIT_REQUEST,
+    POST_EDIT_SUCCESS,
+    POST_EDIT_FAIL,
+    GET_BY_ID_REQUEST,
+    GET_BY_ID_SUCCESS,
+    GET_BY_ID_FAIL
 } from '../constants/locationContants'
 
-export const locationListReducer = (state = { locations: [] }, action) => {
+export const locationTypeReducer = (state = { locationTypes: [] }, action) => {
     switch (action.type) {
         case LOCATION_LIST_REQUEST:
-            return { loading: true, locations: [] }
+            return { loading: true, locationTypes: [] }
         case LOCATION_LIST_SUCCESS:
 
             let data = []
@@ -28,14 +37,14 @@ export const locationListReducer = (state = { locations: [] }, action) => {
 
                 for (const key in objLocations) {
                     if (Object.hasOwnProperty.call(objLocations, key)) {
-                       data.push({code:key, name :objLocations[key]});
+                        data.push({ code: key, name: objLocations[key] });
                     }
                 }
             }
 
             return {
                 loading: false,
-                locations: data
+                locationTypes: data
             }
         case LOCATION_LIST_FAIL:
             return { loading: false, error: action.payload }
@@ -108,3 +117,50 @@ export const locationCreateReducer = (state = {}, action) => {
             return state
     }
 }
+
+
+export const locationListReducer = (state = { locations: [] }, action) => {
+    switch (action.type) {
+        case ALL_LOCATION_REQUEST:
+            return { loading: true, locations: [] }
+        case ALL_LOCATION_SUCCESS:
+            return {
+                loading: false,
+                locations: action.payload.data
+            }
+        case ALL_LOCATION_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+
+export const locationEditReducer = (state = {}, action) => {
+    switch (action.type) {
+        case POST_EDIT_REQUEST:
+            return { loading: true }
+        case POST_EDIT_SUCCESS:
+            return { loading: false, success: true, updateLocation: action.payload }
+        case POST_EDIT_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+
+export const locationByIdReducer = (state = {}, action) => {
+    switch (action.type) {
+        case GET_BY_ID_REQUEST:
+            return { loading: true }
+        case GET_BY_ID_SUCCESS:
+            return { loading: false, success: true, locById: action.payload }
+        case GET_BY_ID_FAIL:
+            return { loading: false, error: action.payload }
+        default:
+            return state
+    }
+}
+
+
