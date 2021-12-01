@@ -59,7 +59,8 @@ export const projectListReducer = (state = { projects: [] }, action) => {
         case PROJECT_LIST_REQUEST:
             return { loading: true, projects: [] }
         case PROJECT_LIST_SUCCESS:
-
+        let data = action.payload.data
+        console.log(data.length, '<<<<< project');
 
             return {
                 loading: false,
@@ -77,6 +78,9 @@ export const buildingListReducer = (state = { buildings: [] }, action) => {
         case BUILDING_LIST_REQUEST:
             return { loading: true, buildings: [] }
         case BUILDING_LIST_SUCCESS:
+
+        
+
             return {
                 loading: false,
                 buildings: action.payload.data
@@ -150,19 +154,42 @@ export const locationEditReducer = (state = {}, action) => {
 }
 
 
-export const locationByIdReducer = (state = {}, action) => {
+const initialState = {
+    locById: {
+        locCode: '',
+        locCreatedAt: '',
+        locDispensation: '',
+        locID: '',
+        locLatitude: '',
+        locLongitude: '',
+        locName: '',
+        locType: '',
+        locTypeLabel: '',
+        project:{
+            locName:'' 
+        },
+        floor:{
+            locName:'' 
+        },
+        building:{
+            locName:'' 
+        }
+    }
+}
+
+export const locationByIdReducer = (state = { initialState }, action) => {
     switch (action.type) {
         case GET_BY_ID_REQUEST:
-            return { loading: true }
+            return { ...state, loading: true }
         case GET_BY_ID_SUCCESS:
-            let data = action.payload.data
-            console.log('ini data by id', data);
-            return { loading: false, success: true, locById: action.payload.data }
+            // let data = action.payload.data
+            // console.log('ini data by id', data);
+            return { ...state, loading: false, success: true, locById: action.payload.data }
 
         case GET_BY_ID_FAIL:
-            return { loading: false, error: action.payload }
+            return { ...state, loading: false, error: action.payload }
         default:
-            return state
+            return { ...state }
     }
 }
 
